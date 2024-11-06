@@ -49,7 +49,17 @@ Route::prefix('/cart')->name('cart.')->group(function () {
         ->middleware(GuestOrVerified::class);
 });
 
-
+Route::middleware(['auth', 'verified'])->group(function() {
+    Route::get('/profile', [ProfileController::class, 'view'])->name('profile');
+    Route::post('/profile', [ProfileController::class, 'store'])->name('profile.update');
+    Route::post('/profile/password-update', [ProfileController::class, 'passwordUpdate'])->name('profile_password.update');
+    Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('cart.checkout');
+    Route::post('/checkout/{order}', [CheckoutController::class, 'checkoutOrder'])->name('cart.checkout-order');
+    Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/checkout/failure', [CheckoutController::class, 'failure'])->name('checkout.failure');
+    Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
+    Route::get('/orders/{order}', [OrderController::class, 'view'])->name('order.view');
+});
 
 Route::post('/webhook/stripe', [CheckoutController::class, 'webhook']);
 
