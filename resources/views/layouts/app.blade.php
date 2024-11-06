@@ -16,7 +16,7 @@
     </style>
 </head>
 <body>
-
+@include('layouts.navigation')
 
 <main class="p-5">
     {{ $slot }}
