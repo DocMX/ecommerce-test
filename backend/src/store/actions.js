@@ -223,7 +223,7 @@ export async function updateProfileImage({commit, state}, formData) {
     }
   })
   .then(({data}) => {
-    commit('setUser', data.user); // Asumiendo que el servidor devuelve el usuario actualizado
+    commit('setUser', data.user); 
     return data;
   })
   .catch(error => {

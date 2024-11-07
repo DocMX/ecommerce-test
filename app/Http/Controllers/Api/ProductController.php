@@ -17,11 +17,6 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $perPage = request('per_page', 10);
@@ -37,12 +32,6 @@ class ProductController extends Controller
         return ProductListResource::collection($query);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(ProductRequest $request)
     {
         $data = $request->validated();
@@ -61,25 +50,11 @@ class ProductController extends Controller
 
         return new ProductResource($product);
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\Models\Product $product
-     * @return \Illuminate\Http\Response
-     */
     public function show(Product $product)
     {
         return new ProductResource($product);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Product      $product
-     * @return \Illuminate\Http\Response
-     */
     public function update(ProductRequest $request, Product $product)
     {
         $data = $request->validated();
@@ -101,13 +76,6 @@ class ProductController extends Controller
 
         return new ProductResource($product);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Product $product
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Product $product)
     {
         $product->delete();
@@ -133,30 +101,22 @@ class ProductController extends Controller
         }
     
         foreach ($images as $id => $image) {
-            // Definir una ruta base para las imágenes
             $path = 'images/' . Str::random();
-            
-            // Verifica si la carpeta no existe en el disco 'public' y la crea si es necesario
+ 
             if (!Storage::disk('public')->exists($path)) {
                 Storage::disk('public')->makeDirectory($path, 0755, true);
             }
-    
-            // Generar un nombre aleatorio para la imagen
+
             $name = Str::random() . '.' . $image->getClientOriginalExtension();
-    
-            // Guardar la imagen en el disco público
+
             if (!Storage::disk('public')->putFileAs($path, $image, $name)) {
                 throw new \Exception("Unable to save file \"{$image->getClientOriginalName()}\"");
             }
-    
-            // Definir la ruta relativa que se guardará en la base de datos
             $relativePath = $path . '/' . $name;
-    
-            // Crear un registro de la imagen
             ProductImage::create([
                 'product_id' => $product->id,
                 'path' => $relativePath,
-                'url' => URL::to(Storage::url($relativePath)), // Generar URL pública
+                'url' => URL::to(Storage::url($relativePath)),
                 'mime' => $image->getClientMimeType(),
                 'size' => $image->getSize(),
                 'position' => $positions[$id] ?? $id + 1

@@ -6,7 +6,6 @@
     </button>
     <Menu as="div" class="relative inline-block text-left">
       <MenuButton class="flex items-center">
-        <!-- Usamos la imagen predeterminada si no hay imagen de perfil -->
         <img :src="profileImageUrl" class="rounded-full w-8 mr-2">
         <small>{{ currentUser.name }}</small>
         <ChevronDownIcon class="h-5 w-5 text-violet-200 hover:text-violet-100" aria-hidden="true"/>
@@ -66,8 +65,6 @@ const currentUser = computed(() => store.state.user.data);
 const profileImageUrl = computed(() => {1
     return currentUser.value?.profile_image || currentUser.value?.imgUrl || 'https://th.bing.com/th/id/OIP.qrCW0XaX0SW78KKlL9l05wHaHa?rs=1&pid=ImgDetMain';
   });
-
-// Función para cerrar sesión
 function logout() {
   store.dispatch('logout')
     .then(() => {
