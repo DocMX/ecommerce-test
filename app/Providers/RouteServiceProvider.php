@@ -27,7 +27,9 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->configureRateLimiting();
-
+        Route::middlewareGroup('admin', [
+            \App\Http\Middleware\Admin::class,
+        ]);
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')
