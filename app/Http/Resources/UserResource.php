@@ -22,6 +22,8 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'created_at' => (new DateTime($this->created_at))->format('Y-m-d H:i:s'),
+            'profile_image' => $this->profile_image,
+            'imgUrl' => $this->profile_image,
         ];
     }
 }

@@ -55,14 +55,6 @@ class UserController extends Controller
 
         return new UserResource($user);
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\User         $user
-     * @return \Illuminate\Http\Response
-     */
     public function update(UpdateUserRequest $request, User $user)
     {
         $data = $request->validated();
@@ -76,7 +68,32 @@ class UserController extends Controller
 
         return new UserResource($user);
     }
-
+    public function imgProfile ($id, UpdateUserRequest $request)
+    {
+        $user = User::findOrFail($id);
+        // Verificar si se proporcionó un archivo en la solicitud
+        if ($request->hasFile('profile_image')) {
+            // Obtener el archivo de imagen de perfil
+            $profileImageFile = $request->file('profile_image');
+    
+            // Guardar el archivo en la ubicación deseada (ejemplo: storage/app/public/profile_images)
+            $profileImagePath = $profileImageFile->store('public/profile_images');
+    
+            // Obtener la URL del archivo guardado
+            $profileImageUrl = url(Storage::url($profileImagePath));
+    
+            // Actualizar la ruta de la imagen de perfil en el modelo de usuario
+            $user->profile_image = $profileImageUrl;
+        }
+        $user->save(); 
+        return response()->json([
+            'status' => 'success',
+            'message' => 'poerfil actualizado exitosamente',
+            'data' => [
+                'user' => $user,
+            ]
+        ]);
+    }
     /**
      * Remove the specified resource from storage.
      *

@@ -27,6 +27,8 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => ['max:55'],
             'email' => ['email'],
+            'profile_image' => 'nullable|image|max:10240', // 10MB
+            'profile_image_path' => 'nullable|string',
             'password' => ['nullable', Password::min(8)->numbers()->letters()->symbols()]
         ];
     }

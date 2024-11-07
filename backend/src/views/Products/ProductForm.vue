@@ -90,6 +90,7 @@
         .then((response) => {
           loading.value = false;
           product.value = response.data
+          console.log("onMounted",response.data);
         })
     }
   
@@ -102,6 +103,7 @@
   function onSubmit($event, close = false) {
     loading.value = true
     errors.value = {};
+    
     product.value.quantity = product.value.quantity || null
     if (product.value.id) {
       store.dispatch('updateProduct', product.value)

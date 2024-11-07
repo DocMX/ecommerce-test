@@ -131,28 +131,39 @@ class ProductController extends Controller
                 ->where('id', $id)
                 ->update(['position' => $position]);
         }
-
+    
         foreach ($images as $id => $image) {
+            // Definir una ruta base para las imágenes
             $path = 'images/' . Str::random();
-            if (!Storage::exists($path)) {
-                Storage::makeDirectory($path, 0755, true);
+            
+            // Verifica si la carpeta no existe en el disco 'public' y la crea si es necesario
+            if (!Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->makeDirectory($path, 0755, true);
             }
-            $name = Str::random().'.'.$image->getClientOriginalExtension();
-            if (!Storage::putFileAS('public/' . $path, $image, $name)) {
+    
+            // Generar un nombre aleatorio para la imagen
+            $name = Str::random() . '.' . $image->getClientOriginalExtension();
+    
+            // Guardar la imagen en el disco público
+            if (!Storage::disk('public')->putFileAs($path, $image, $name)) {
                 throw new \Exception("Unable to save file \"{$image->getClientOriginalName()}\"");
             }
+    
+            // Definir la ruta relativa que se guardará en la base de datos
             $relativePath = $path . '/' . $name;
-
+    
+            // Crear un registro de la imagen
             ProductImage::create([
                 'product_id' => $product->id,
                 'path' => $relativePath,
-                'url' => URL::to(Storage::url($relativePath)),
+                'url' => URL::to(Storage::url($relativePath)), // Generar URL pública
                 'mime' => $image->getClientMimeType(),
                 'size' => $image->getSize(),
                 'position' => $positions[$id] ?? $id + 1
             ]);
         }
     }
+    
 
     private function deleteImages($imageIds, Product $product)
     {
