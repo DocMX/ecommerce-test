@@ -68,32 +68,59 @@ class UserController extends Controller
 
         return new UserResource($user);
     }
-    public function imgProfile ($id, UpdateUserRequest $request)
+    public function imgProfile($id, UpdateUserRequest $request)
     {
+        // Buscar el usuario por ID
         $user = User::findOrFail($id);
+
         // Verificar si se proporcionó un archivo en la solicitud
-        if ($request->hasFile('profile_image')) {
-            // Obtener el archivo de imagen de perfil
-            $profileImageFile = $request->file('profile_image');
-    
-            // Guardar el archivo en la ubicación deseada (ejemplo: storage/app/public/profile_images)
-            $profileImagePath = $profileImageFile->store('public/profile_images');
-    
-            // Obtener la URL del archivo guardado
-            $profileImageUrl = url(Storage::url($profileImagePath));
-    
-            // Actualizar la ruta de la imagen de perfil en el modelo de usuario
-            $user->profile_image = $profileImageUrl;
+        if ($request->hasFile('image')) {
+        // Obtener el archivo de imagen de perfil
+        $profileImageFile = $request->file('image');
+
+        // Definir la carpeta de almacenamiento para las imágenes de perfil
+        $path = 'profile_images/' . Str::random(20); // Usamos un nombre único para cada imagen
+
+        // Verificar si la carpeta no existe en el disco 'public' y la crea si es necesario
+        if (!Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->makeDirectory($path, 0755, true);
         }
-        $user->save(); 
+
+        // Generar un nombre aleatorio para la imagen de perfil con la extensión original
+        $imageName = Str::random(20) . '.' . $profileImageFile->getClientOriginalExtension();
+
+        // Intentar guardar la imagen en el disco público
+        try {
+            // Guardar la imagen en el disco público
+            $imagePath = Storage::disk('public')->putFileAs($path, $profileImageFile, $imageName);
+        } catch (\Exception $e) {
+            // Si no se pudo guardar, lanzar un error
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No se pudo guardar la imagen: ' . $e->getMessage(),
+            ], 500);
+        }
+
+        // Obtener la URL pública de la imagen guardada
+        $profileImageUrl = url(Storage::url($imagePath));
+
+        // Actualizar la ruta de la imagen de perfil en el modelo de usuario
+        $user->profile_image = $profileImageUrl;
+        }
+
+        // Guardar los cambios en el modelo de usuario
+        $user->save();
+
+        // Responder con un mensaje de éxito
         return response()->json([
             'status' => 'success',
-            'message' => 'poerfil actualizado exitosamente',
+            'message' => 'Perfil actualizado exitosamente',
             'data' => [
                 'user' => $user,
             ]
         ]);
     }
+
     /**
      * Remove the specified resource from storage.
      *

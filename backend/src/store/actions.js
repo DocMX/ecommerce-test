@@ -215,3 +215,18 @@ export function updateCategory({commit}, category) {
 export function deleteCategory({commit}, category) {
   return axiosClient.delete(`/categories/${category.id}`)
 }
+
+export async function updateProfileImage({commit, state}, formData) {
+  return axiosClient.post(`/usersImg/${state.user.data.id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  .then(({data}) => {
+    commit('setUser', data.user); // Asumiendo que el servidor devuelve el usuario actualizado
+    return data;
+  })
+  .catch(error => {
+    console.error('Error al actualizar la imagen de perfil:', error);
+  });
+}
