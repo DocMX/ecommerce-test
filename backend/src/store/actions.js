@@ -101,6 +101,8 @@ export function updateProduct({commit}, product) {
     form.append('id', product.id);
     form.append('title', product.title);
     product.images.forEach(im => form.append(`images[${im.id}]`, im))
+
+    
     if (product.deleted_images) {
       product.deleted_images.forEach(id => form.append('deleted_images[]', id))
     }

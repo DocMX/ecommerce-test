@@ -58,7 +58,7 @@
   const emit = defineEmits(['update:modelValue', 'update:deletedImages', 'update:imagePositions'])
   
   // Computed
-  
+  let bigIntCounter = BigInt(1);
   // Methods
   function onFileChange($event) {
     const chosenFiles = [...$event.target.files];
@@ -66,7 +66,8 @@
     $event.target.value = ''
     const allPromises = [];
     for (let file of chosenFiles) {
-      file.id = uuidv4()
+      file.id = bigIntCounter
+      bigIntCounter += BigInt(1);
       const promise = readFile(file)
       allPromises.push(promise)
       promise
