@@ -111,6 +111,8 @@
           loading.value = false;
           if (response.status === 200) {
             product.value = response.data
+            console.log(product.value);
+
             store.commit('showToast', 'Product was successfully updated');
             store.dispatch('getProducts')
             if (close) {
