@@ -50,6 +50,8 @@ Make sure you have environment setup properly.
 ✅ Order processing
 ✅ Payment gateway integration (Stripe/Shopify)
 ✅ Email notifications
+✅ admin panel (dashboard, categories, products, orders, users, custumers, Reports)
+
 
 
 
