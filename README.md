@@ -24,6 +24,10 @@ Make sure you have environment setup properly.
 6. Run migrations `php artisan migrate --seed`
 7. Run `php artisan storage:link`
 7. Start local server by executing `php artisan serve`
+8. Run npm run dev in your terminal.
+9. Navigat to backend folder and Run npm run dev.
+10. Email need an account, if you have an account in mailtrap you can test it.
+11. I use stripe in mode test for checkout, but you can change for shopify.
 
 
 
